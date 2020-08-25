@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- 标题栏 -->
+    <declare-styleable name="AppTitleBar">
+        <attr name="titleText" format="string" />
+        <attr name="leftBtnImage" format="reference" />
+        <attr name="leftText" format="string" />
+        <attr name="rightText" format="string" />
+        <attr name="rightSecondText" format="string" />
+        <attr name="rightBtnImage" format="reference" />
+        <attr name="barBackground" format="color" />
+        <attr name="statusBarColor" format="color" />
+        <attr name="function">
+            <flag name="left_btn" value="1" />
+            <flag name="title" value="2" />
+            <flag name="right_text" value="4" />
+            <flag name="right_second_text" value="32" />
+            <flag name="left_text" value="16" />
+            <flag name="right_btn" value="8" />
+        </attr>
+        <attr name="leftBtnClick" format="string" />
+        <attr name="leftTextClick" format="string" />
+        <attr name="rightTextClick" format="string" />
+        <attr name="rightSecondTextClick" format="string" />
+        <attr name="rightBtnClick" format="string" />
+        <attr name="titleClick" format="string" />
+        <attr name="showStatusBar" format="boolean" />
+        <attr name="titleColor" format="color" />
+        <attr name="rightTextColor" format="color" />
+        <attr name="rightSecondTextColor" format="color" />
+        <attr name="leftTextColor" format="color" />
+        <attr name="titleTextLimit" format="integer" />
+    </declare-styleable>
+
+    <!--  信息栏  -->
+    <declare-styleable name="InformationBar">
+        <attr name="title" format="string" />
+        <attr name="showDivider" format="boolean" />
+        <attr name="switchEnable" format="boolean" />
+        <attr name="onCheckedChange" format="string" />
+        <attr name="contentText" format="string" />
+        <attr name="contentTextColor" format="color" />
+        <attr name="contentTextSize" format="dimension" />
+        <attr name="contentPic" format="string" />
+        <attr name="secondContentText" format="string" />
+    </declare-styleable>
+
+    <!--  分割线 -->
+    <declare-styleable name="DividerView">
+        <attr name="color" format="color" />
+        <attr name="dashLength" format="dimension" />
+        <attr name="dashGap" format="dimension" />
+        <attr name="dashThickness" format="dimension" />
+        <attr name="orientation" format="enum">
+            <enum name="horizontal" value="0" />
+            <enum name="vertical" value="1" />
+        </attr>
+    </declare-styleable>
+
+    <!-- 圆角图片 -->
+    <declare-styleable name="CircleImageView">
+        <attr name="is_circle" format="boolean" />                  <!--是否显示为圆形（默认为矩形）-->
+        <attr name="is_cover_src" format="boolean" />               <!--border、inner_border是否覆盖图片内容-->
+        <attr name="corner_radius" format="dimension" />            <!--统一设置四个角的圆角半径	-->
+        <attr name="corner_top_left_radius" format="dimension" />   <!--左上角圆角半径-->
+        <attr name="corner_top_right_radius" format="dimension" />  <!--右上角圆角半径-->
+        <attr name="corner_bottom_left_radius" format="dimension" /><!--左下角圆角半径-->
+        <attr name="corner_bottom_right_radius" format="dimension" /><!--右下角圆角半径-->
+        <attr name="border_width" format="dimension" />             <!--边框宽度-->
+        <attr name="border_color" format="color" />                 <!--边框颜色-->
+        <attr name="inner_border_width" format="dimension" />       <!--相当于内层边框（is_circle为true时支持）-->
+        <attr name="inner_border_color" format="color" />           <!--内边框颜色-->
+        <attr name="mask_color" format="color" />                   <!--图片上绘制的遮罩颜色-->
+    </declare-styleable>
+
+    <declare-styleable name="searchEditText">
+        <attr name="imageWidth" format="dimension" />
+        <attr name="hintSize" format="dimension" />
+        <attr name="hintColor" format="color" />
+        <attr name="hintText" format="string" />
+    </declare-styleable>
+</resources>

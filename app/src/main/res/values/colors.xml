@@ -10,8 +10,15 @@
     <color name="black">#000000</color>
 
     <color name="dialog_bg">#66000000</color>
+    <!-- 应用背景色-->
+    <color name="color_app_background">#FAF7F7</color>
+    <!-- 标题栏背景色-->
+    <color name="title_bar_background">#FFFFFF</color>
+    <!-- 字体主色-->
+    <color name="color_333333">#333333</color>
 
     <color name="main_dialog_title">#0192DA</color>
     <color name="main_dialog_content">#00A0F0</color>
+    <color name="color_333333">#333</color>
 
 </resources>
