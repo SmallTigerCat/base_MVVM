@@ -1,7 +1,12 @@
 package com.sports2020.demo;
 
+import android.content.Context;
 import android.os.Bundle;
+import android.os.IBinder;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
@@ -29,6 +34,20 @@ public abstract class BaseActivity<VM extends BaseViewModel, DB extends ViewData
     protected VM viewModel;
     protected DB dataBinding;
     private LoadingDialog loadingDialog;
+
+    /**
+     * 上一次点击的时间戳
+     */
+    private long mLastClickTime = 0L;
+    /**
+     * 被判断为重复点击的时间间隔
+     */
+    private long MIN_CLICK_DELAY_TIME = 300L;
+    /**
+     * 是否支持双击，默认为不支持
+     */
+    private boolean mDoubleClickEnable = false;
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -72,6 +91,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, DB extends ViewData
         if (dataBinding != null) {
             dataBinding.unbind();
         }
+        hideSystemSoftInput();
     }
 
     /**
@@ -201,6 +221,83 @@ public abstract class BaseActivity<VM extends BaseViewModel, DB extends ViewData
      */
     protected void showMessage(String message, int showTime) {
         ToastUtil.getInstance().show(this, message, showTime);
+    }
+
+    @Override
+    public boolean dispatchTouchEvent(MotionEvent ev) {
+        if (ev.getAction() == MotionEvent.ACTION_UP) {
+            if (isDoubleClick()) {
+                return true;
+            }
+        }
+        //点击软键盘外部，软键盘消失
+        if (ev.getAction() == MotionEvent.ACTION_DOWN) {
+            // 获得当前得到焦点的View，一般情况下就是EditText（特殊情况就是轨迹求或者实体案件会移动焦点）
+            View v = getCurrentFocus();
+            if (isShouldHideInput(v, ev)) {
+                hideSoftInput(v.getWindowToken());
+            }
+        }
+        return super.dispatchTouchEvent(ev);
+    }
+
+    private Boolean isDoubleClick() {
+        if (mDoubleClickEnable) return false;
+        long time = System.currentTimeMillis();
+        if (time - mLastClickTime > MIN_CLICK_DELAY_TIME) {
+            mLastClickTime = time;
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * 根据EditText所在坐标和用户点击的坐标相对比，来判断是否隐藏键盘，因为当用户点击EditText时没必要隐藏
+     *
+     * @param v
+     * @param event
+     * @return
+     */
+    private Boolean isShouldHideInput(View v, MotionEvent event) {
+        if (v instanceof EditText) {
+            int[] l = new int[]{0, 0};
+            v.getLocationInWindow(l);
+            int left = l[0];
+            int top = l[1];
+            int bottom = top + v.getHeight();
+            int right = left + v.getWidth();
+            // 点击EditText的事件，忽略它。
+            return !(event.getX() > left) || !(event.getX() < right) || !(event.getY() > top) || !(event.getY() < bottom);
+        }
+        // 如果焦点不是EditText则忽略，这个发生在视图刚绘制完，第一个焦点不在EditView上，和用户用轨迹球选择其他的焦点
+        return false;
+    }
+
+    private void hideSystemSoftInput() {
+        View view = getWindow().peekDecorView();
+        if (view != null && view.getWindowToken() != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(
+                    view.getWindowToken(),
+                    InputMethodManager.HIDE_NOT_ALWAYS
+            );
+        }
+    }
+
+    /**
+     * 多种隐藏软件盘方法的其中一种
+     *
+     * @param token
+     */
+    private void hideSoftInput(IBinder token) {
+        if (token != null) {
+            InputMethodManager im = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+            im.hideSoftInputFromWindow(
+                    token,
+                    InputMethodManager.HIDE_NOT_ALWAYS
+            );
+        }
     }
 
 }
