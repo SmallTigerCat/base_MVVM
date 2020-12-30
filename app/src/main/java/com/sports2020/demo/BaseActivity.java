@@ -1,10 +1,14 @@
 package com.sports2020.demo;
 
 import android.content.Context;
+import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.Toast;
@@ -52,6 +56,7 @@ public abstract class BaseActivity<VM extends BaseViewModel, DB extends ViewData
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        dealStatusBar();
         dataBinding = initDataBinding();
         dataBinding.setLifecycleOwner(this);
         viewModel = initViewModel();
@@ -300,5 +305,33 @@ public abstract class BaseActivity<VM extends BaseViewModel, DB extends ViewData
         }
     }
 
+    /**
+     * 处理状态栏
+     */
+    private void dealStatusBar() {
+        Window window = getWindow();
+        //KITKAT也能满足，只是SYSTEM_UI_FLAG_LIGHT_STATUS_BAR（状态栏字体颜色反转）只有在6.0才有效
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);//透明状态栏
+            // 状态栏字体设置为深色，SYSTEM_UI_FLAG_LIGHT_STATUS_BAR 为SDK23增加
+            window.getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+            // 部分机型的statusbar会有半透明的黑色背景
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(Color.TRANSPARENT);// SDK21
+        } else if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            window.addFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+        }
+        View decor = getWindow().getDecorView();
+        if (setAndroidNativeLightStatusBar()) {
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR);
+        } else {
+            decor.setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
+        }
+    }
+
+    protected boolean setAndroidNativeLightStatusBar() {
+        return true;
+    }
 }
 
